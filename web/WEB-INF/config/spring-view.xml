@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:context="http://www.springframework.org/schema/context" 
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx" 
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/aop 
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       ">
+	<context:component-scan base-package="com.*"/>
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+	<tx:annotation-driven transaction-manager="txManager"/> 
+	
+ 	<!-- ViewResolver -->
+ 	<bean id="viewResolver" 
+ 	class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+ 		<property name="prefix" value="/view/"/>
+ 		<property name="suffix" value=".jsp"/>
+ 		<property name="order" value="0"/>
+ 	</bean>
+ 	<!-- 다국어 처리 -->
+ 	
+ 	<bean id="messageSource" 
+ 	class="org.springframework.context.support.ResourceBundleMessageSource">
+ 		<property name="basenames">
+ 			<list>
+ 				<value>messages/messages</value>
+ 			</list>
+ 		</property>
+ 	</bean>	
+ 	<!-- File Upload -->
+ 	<bean id="multipartResolver"
+	    class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	    <property name="maxUploadSize" value="500000000"/>
+	</bean>
+ 	
+    
+    <!-- 1. Database Setting -->
+ 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+ 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+ 		<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+ 		<property name="username" value="test2"/>
+ 		<property name="password" value="test2"/>
+ 	</bean>
+
+ 	<!-- 2. Transaction Setting -->
+ 	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+ 		<property name="dataSource" ref="dataSource"/>
+ 	</bean>
+ 	
+ 	<!-- 3. MyBatis Setting -->
+ 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+ 		<property name="dataSource" ref="dataSource"/>
+ 		<property name="configLocation" value="classpath:com/config/mybatis.xml"/>
+ 	</bean>
+ 	<!-- 4. Spring Mybatis Connect -->
+ 	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+ 		<constructor-arg ref="sqlSessionFactory"/>
+ 	</bean>
+ 	<!-- 5. Mapper Setting -->
+ 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+ 		<property name="basePackage" value="com.hw.mapper"/>
+ 	</bean>
+ 
+ 
+</beans>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
